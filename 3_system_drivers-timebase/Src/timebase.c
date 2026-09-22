@@ -1,75 +1,85 @@
+/**
+ * @file timebase.c
+ * @brief SysTick timebase driver implementation for STM32F401RE.
+ * @details Configures SysTick for a 1 ms interrupt period at an 84 MHz core clock.
+ * @author yougiyo
+ * @date September 22, 2026
+ */
+
 #include "timebase.h"
 #include "stm32f4xx.h"
 
-#define CTRL_ENABLE		(1U<<0)
-#define CTRL_TICKINT	(1U<<1)
-#define CTRL_CLCKSRC	(1U<<2)
-#define CTRL_COUNTFLAG	(1U<<16)
+#define CTRL_ENABLE         (1U << 0)
+#define CTRL_TICKINT        (1U << 1)
+#define CTRL_CLKSRC         (1U << 2)
 
-#define ONE_SEC_LOAD	 16000000
-
-#define MAX_DELAY		 0xFFFFFFFF
-
-#define TICK_FREQ		 1
+#define SYS_CLOCK_HZ        (84000000U)
+#define TICK_FREQ_HZ        (1000U)
+#define SYSTICK_LOAD_1MS    ((SYS_CLOCK_HZ / TICK_FREQ_HZ) - 1U)
 
 volatile uint32_t g_curr_tick;
-volatile uint32_t g_curr_tick_p;
 
+static void tick_increment(void);
 
-/*Delay in seconds*/
+/*
+ * @brief Block the CPU for the requested number of milliseconds.
+ */
 void delay(uint32_t delay)
 {
-	uint32_t tickstart =  get_tick();
-	uint32_t wait =  delay;
+    uint32_t tickstart = get_tick();
 
-	if(wait < MAX_DELAY)
-	{
-		wait += (uint32_t)TICK_FREQ;
-	}
-
-    while((get_tick() - tickstart) < wait){}
-
+    while ((get_tick() - tickstart) < delay)
+    {
+    }
 }
 
+/*
+ * @brief Return the current millisecond tick snapshot.
+ */
 uint32_t get_tick(void)
 {
-	__disable_irq();
-	g_curr_tick_p = g_curr_tick;
-	__enable_irq();
-
-	return g_curr_tick_p;
-
+    return g_curr_tick;
 }
+
+/*
+ * @brief Increment the global millisecond tick counter.
+ */
 static void tick_increment(void)
 {
-	g_curr_tick += TICK_FREQ;
+    g_curr_tick++;
 }
+
+/*
+ * @brief Configure SysTick for 1 ms interrupts at 84 MHz system clock.
+ */
 void timebase_init(void)
 {
+    /* Disable global interrupts while SysTick registers are configured. */
+    __disable_irq();
 
-	/*Disable global interrupts*/
-	__disable_irq();
+    /* Program SysTick_LOAD with cycles-per-millisecond (84,000 - 1). */
+    SysTick->LOAD = SYSTICK_LOAD_1MS;
 
-    /*Load the timer with number of clock cycles per second*/
-	SysTick->LOAD =  ONE_SEC_LOAD - 1;
+    /* Clear SysTick_VAL to reset the current down-counter value. */
+    SysTick->VAL = 0U;
 
-    /*Clear systick current value register*/
-	SysTick->VAL = 0;
+    /* Select processor clock as SysTick source in SysTick_CTRL. */
+    SysTick->CTRL = CTRL_CLKSRC;
 
-    /*Select internal clock source*/
-	SysTick->CTRL = CTRL_CLCKSRC;
+    /* Enable SysTick interrupt generation in SysTick_CTRL. */
+    SysTick->CTRL |= CTRL_TICKINT;
 
-    /*Enable interrupt*/
-	SysTick->CTRL |= CTRL_TICKINT;
+    /* Enable SysTick counter in SysTick_CTRL. */
+    SysTick->CTRL |= CTRL_ENABLE;
 
-	/*Enable systick*/
-	SysTick->CTRL |=CTRL_ENABLE;
-
-	/*Enable global interrupts*/
-	__enable_irq();
+    /* Re-enable global interrupts after SysTick setup is complete. */
+    __enable_irq();
 }
 
+/*
+ * @brief SysTick interrupt service routine.
+ */
 void SysTick_Handler(void)
 {
-	tick_increment();
+    tick_increment();
 }
