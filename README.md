@@ -115,9 +115,11 @@ No STM32 HAL or CubeMX-generated peripheral driver is required by the design of 
 
 ## Target Hardware
 
-The drivers target STM32 microcontrollers based on ARM Cortex-M cores. Support depends on the device headers and register definitions selected for the specific STM32 family.
+The project was developed and tested on the **STM32 Nucleo-F401RE** board, using the **STM32F401RE** MCU from the **STM32F4** family (**ARM Cortex-M4**).
 
-The project is especially relevant to **Cortex-M4** devices, including variants with hardware FPU support. Before using a driver on a new MCU, verify the peripheral register layout, clock tree, interrupt assignments, and device-specific CMSIS definitions.
+The drivers target STM32 microcontrollers based on ARM Cortex-M cores. Support for devices beyond the tested target depends on the device headers and register definitions selected for the specific STM32 family.
+
+Before using a driver on a different MCU or board, verify the peripheral register layout, clock tree, interrupt assignments, and device-specific CMSIS definitions.
 
 ## Design Philosophy
 
@@ -141,32 +143,10 @@ Contributions are welcome. To add a new driver:
 
 ## License
 
-This project is intended to be released under the **MIT License**. Add the complete license text to a `LICENSE` file before distributing the project:
-
-```text
-MIT License
-
-Copyright (c) [YEAR] [AUTHOR]
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
+This project is released under the **MIT License**. See the root-level [`LICENSE`](LICENSE) file for the complete text.
 
 ## Status
 
-This repository is an educational and extensible bare-metal driver collection. Review the target MCU reference manual and device datasheet before deploying a driver in production firmware.
+All five current drivers (**FPU, UART, timebase, GPIO, and ADC**) are implemented and functional, and were tested on the **STM32 Nucleo-F401RE** board.
+
+This repository remains an educational and extensible bare-metal driver collection; review the target MCU reference manual and device datasheet before deploying in production firmware.
