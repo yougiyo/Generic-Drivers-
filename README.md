@@ -1,2 +1,12 @@
 # Generic-Drivers-
-creating stm32 drivers like fpu and uart and time base , adc gpio 
+
+Minimal STM32 register-level driver set for:
+- FPU enable
+- UART init/send/receive
+- SysTick time base (millis + delay)
+- ADC single-channel conversion
+- GPIO mode/read/write
+
+## Layout
+- `/include`: public headers
+- `/src`: driver implementations
