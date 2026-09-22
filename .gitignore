@@ -1,0 +1,7 @@
+# Eclipse workspace metadata and generated build output
+metadata/
+**/Debug/
+
+# Local tools and downloaded reference material
+*.exe
+*.pdf
