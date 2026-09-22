@@ -5,3 +5,23 @@ metadata/
 # Local tools and downloaded reference material
 *.exe
 *.pdf
+
+# STM32CubeIDE project files
+*.launch
+.settings/
+*.cproject
+*.project
+
+# Build output folders
+Debug/
+Release/
+
+# Compiled firmware and object artifacts
+*.o
+*.elf
+*.bin
+*.hex
+*.map
+
+# IDE metadata
+.metadata/
